@@ -44,8 +44,8 @@ def cleanup() -> None:
     # More?
 
 class BarcodeReader:
-    def __init__(self):
-        self._stream = VideoStream(src=0).start()
+    def __init__(self, src=0, usePiCamera=False):
+        self._stream = VideoStream(src=src, usePiCamera=usePiCamera).start()
         self._running = True
 
     def _grab_frame(self):
