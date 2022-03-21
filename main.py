@@ -51,20 +51,26 @@ import img_tools
 # path = os.path.abspath(image_file)
 # print(path)
 # assert isinstance(path, str)
-if not image_folder.is_dir():
-    sys.exit("Must be a folder")
+# if not image_folder.is_dir():
+#     sys.exit("Must be a folder")
+#
+# pictures = [
+#     img_tools.load_gif(str(image))
+#     for image in image_folder.iterdir()
+#     if not str(image).endswith("_out.gif")
+# ]
+# idle = pictures.pop(0)
+#
+# print(len(pictures))
+#
+# while True:
+#     now = time.time()
+#     while time.time() < now + 5:
+#         img_tools.play_image(matrix, idle)
+#     img_tools.play_image(matrix, random.choice(pictures))
 
-pictures = [
-    img_tools.load_gif(str(image))
-    for image in image_folder.iterdir()
-    if not str(image).endswith("_out.gif")
-]
-idle = pictures.pop(0)
+import utils
 
-print(len(pictures))
-
+gif = utils.GifHolder("proto_neutral.gif", post_delay=0)
 while True:
-    now = time.time()
-    while time.time() < now + 5:
-        img_tools.play_image(matrix, idle)
-    img_tools.play_image(matrix, random.choice(pictures))
+    gif.display(matrix)

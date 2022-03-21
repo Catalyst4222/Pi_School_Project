@@ -2,7 +2,7 @@ import sys
 import time
 from typing import TYPE_CHECKING, Union
 
-from PIL import Image
+from PIL import Image, ImageSequence
 
 if TYPE_CHECKING:
     import pathlib
@@ -62,22 +62,25 @@ class ImageHolder:
 
 
 class GifHolder(ImageHolder):  # subclass woooo!
-    @classmethod
-    def from_file(
-        cls, file: Union[str, "pathlib.Path"]
-    ):  # to do figure out how to load other ways
-        # Prefer preproccessed images, less loading time
-        if not str(file).endswith("_out.py"):
-            ...  # wtf do I do here?
-            print("You should really prep the image", file=sys.stderr)
+    @staticmethod
+    def prep_image(image: Union[str, "pathlib.Path", bytes, Image.Image]) -> Image.Image:
+        if not isinstance(image, Image.Image):
+            image = Image.open(image)
 
-        image: Image.Image = Image.open(file)
+        if image.width > M_WIDTH or image.height > M_HEIGHT:
+            # Fit the image to the screen
+            image.thumbnail((M_WIDTH, M_HEIGHT))
 
-
+        return image
 
 
     def display(self, matrix: "RGBMatrix"):
-        for image in self.images:
-            image.display(matrix)
+        for frame in range(self.image.n_frames):
+            self.image.seek(frame)
+            matrix.SetImage(self.image.convert("RGB"))
+            print(self.image.info["duration"])
+            time.sleep(self.image.info["duration"] / 1000)
 
+        print("sleeping")
         time.sleep(self.post_delay)
+        print("slept")

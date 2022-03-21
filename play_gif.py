@@ -50,4 +50,4 @@ image = img_tools.load_gif(image_file)
 
 while True:
     img_tools.play_image(matrix, image)
-    time.sleep(5)
+    # time.sleep(5)
