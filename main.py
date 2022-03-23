@@ -70,7 +70,12 @@ import img_tools
 #     img_tools.play_image(matrix, random.choice(pictures))
 
 import utils
+#
+# gif = utils.GifHolder("proto_neutral.gif", post_delay=0)
+# while True:
+#     gif.display(matrix)
+aaaa = utils.FrameHolder("animations")
+print("done")
+aaaa.display(matrix)
 
-gif = utils.GifHolder("proto_neutral.gif", post_delay=0)
-while True:
-    gif.display(matrix)
+

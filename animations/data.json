@@ -1,0 +1,21 @@
+{
+  "frames": [
+    {
+      "name": "0.gif",
+      "delay": 5,
+      "order": 0
+    },
+    {
+      "name": "1.gif",
+      "delay": 0.5,
+      "order": 1
+    },
+    {
+      "name": "2.gif",
+      "delay": 0.5,
+      "order": 2
+    }
+  ],
+  "resolved": true,
+  "export_path": "animations.gif"
+}
