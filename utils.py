@@ -142,7 +142,10 @@ class FrameHolder(GifHolder):  # Subclass due to being an "animation"
                 continue
 
             # checks the delay given by data.json, to be passed to post_delay
-            delay = next(filter(lambda data_: data_["name"] == child.name, data["frames"])).get("delay", 0)
+            delay = next(
+                filter(lambda data_: data_["name"] == child.name, data["frames"]),
+                {}
+            ).get("delay", 0)
 
             if child.is_dir() and (child / "data.json").exists():
                 # recursive animation folder
