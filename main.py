@@ -37,16 +37,16 @@ matrix = RGBMatrix(options=options)
 canvas = matrix.CreateFrameCanvas()
 
 
-if len(sys.argv) < 2:
-    sys.exit("Require an image argument")
-    # image_file = "saab-1496319292.gif"
-else:
-
-    image_folder = pathlib.Path(sys.argv[1])
+# if len(sys.argv) < 2:
+#     sys.exit("Require an image argument")
+#     # image_file = "saab-1496319292.gif"
+# else:
+#
+#     image_folder = pathlib.Path(sys.argv[1])
 
 import img_tools
 
-# os.getcwd()  # TODO search for pre-scaled image
+# os.getcwd()  
 
 # path = os.path.abspath(image_file)
 # print(path)
