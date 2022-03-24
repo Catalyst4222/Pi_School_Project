@@ -17,5 +17,6 @@
     }
   ],
   "resolved": true,
-  "export_path": "animations.gif"
+  "export_to": "animations.gif",
+  "import_from": "animations.gif"
 }

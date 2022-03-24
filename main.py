@@ -74,8 +74,26 @@ import utils
 # gif = utils.GifHolder("proto_neutral.gif", post_delay=0)
 # while True:
 #     gif.display(matrix)
+
+
 aaaa = utils.FrameHolder("animations")
 print("done")
-aaaa.display(matrix)
+while True:
+    aaaa.display(matrix)
 
 
+# base = utils.ImageHolder("proto_neutral.gif", post_delay=0.001)
+# for i in range(64):
+#     canvas = matrix.CreateFrameCanvas()
+#
+#     base.display(canvas)
+#
+#     block = Image.new('1', (64-i, 32))
+#     canvas.SetImage(block.convert("RGB"), i)
+#
+#
+#     matrix.SwapOnVSync(canvas)
+#     print(i)
+#
+# while True:
+#     utils.GifHolder("proto_neutral.gif").display(matrix)

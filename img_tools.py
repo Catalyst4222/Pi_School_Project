@@ -47,4 +47,4 @@ def play_image(matrix, image: Image.Image):
         print(image.info["duration"])
         # canvas.SetImage(image.convert('RGB'))
         matrix.SetImage(image.convert("RGB"))
-        time.sleep(image.info["duration"] / 100)
+        time.sleep(image.info["duration"] / 1000)

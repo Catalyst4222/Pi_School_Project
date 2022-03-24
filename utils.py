@@ -25,6 +25,7 @@ if TYPE_CHECKING:
         frames: list[FrameData]
         resolved: bool
         export_to: str
+        import_from: str
 
 # Hardcoded, fight me
 M_WIDTH = 64
@@ -77,7 +78,7 @@ class ImageHolder:
 
     def display(self, matrix: "RGBMatrix"):
         matrix.SetImage(self.image.convert("RGB"))
-        time.sleep(self.image.info.get("duration") or self.post_delay)
+        time.sleep(self.post_delay or self.image.info.get("duration"))
 
 
 class GifHolder(ImageHolder):  # subclass woooo!
@@ -118,9 +119,15 @@ class FrameHolder(GifHolder):  # Subclass due to being an "animation"
         if export_to is None:
             export_to = data.get("export_to")
 
-        if data.get("resolved") and data.get("export_to") and (folder_path / data.get("export_to")).exists():
+        # noinspection PyUnboundLocalVariable
+        if (
+            data.get("resolved")
+            and (import_from := data.get("import_from"))
+            and pathlib.Path(import_from).exists()
+        ):
             # The file has already been made, and data says it's good
-            self.image = Image.open(folder_path / export_to)
+            print(f"fetching image for {path} from resolved")
+            self.image = Image.open(import_from)
             return
 
         valid_children = [frame["name"] for frame in data["frames"]]
@@ -136,7 +143,6 @@ class FrameHolder(GifHolder):  # Subclass due to being an "animation"
 
             # checks the delay given by data.json, to be passed to post_delay
             delay = next(filter(lambda data_: data_["name"] == child.name, data["frames"])).get("delay", 0)
-            print(delay)
 
             if child.is_dir() and (child / "data.json").exists():
                 # recursive animation folder
