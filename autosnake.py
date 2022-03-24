@@ -143,7 +143,7 @@ class Snake:
 
 
 print("Press CTRL-C to stop.")
-snek = Snake(matrix, color=(255, 255, 255), blank=(0, 0, 0), bias=3)
+snek = Snake(matrix, color=(255, 255, 255), blank=(0, 0, 0), bias=10)
 
 apple = Pixel(randint(0, matrix.width - 1), randint(0, matrix.height - 1))
 matrix.SetPixel(apple.x, apple.y, 255, 0, 0)
@@ -154,7 +154,7 @@ while True:
         snek.move(apple)
     except QuickKill:
         print("Game over")
-        time.sleep(60)  # let the user see the snake
+        time.sleep(600)  # let the user see the snake
         break
     snek.draw_step()
 

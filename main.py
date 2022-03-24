@@ -12,6 +12,9 @@ from typing import Annotated, Literal, Sequence
 
 from PIL import Image, ImageSequence
 
+import img_tools
+import utils
+
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
 except ImportError:
@@ -33,9 +36,6 @@ options.hardware_mapping = "adafruit-hat"  # If you have an Adafruit HAT: 'adafr
 char = Literal[tuple(range(256))]
 Color = tuple[char, char, char]
 
-matrix = RGBMatrix(options=options)
-canvas = matrix.CreateFrameCanvas()
-
 
 # if len(sys.argv) < 2:
 #     sys.exit("Require an image argument")
@@ -44,8 +44,6 @@ canvas = matrix.CreateFrameCanvas()
 #
 #     image_folder = pathlib.Path(sys.argv[1])
 
-import img_tools
-import utils
 
 # os.getcwd()
 
@@ -77,10 +75,11 @@ import utils
 #     gif.display(matrix)
 
 
-aaaa = utils.FrameHolder("animations")
-print("done")
+animation = utils.FrameHolder("animations")
+matrix = utils.FormattedMatrix()
+
 while True:
-    aaaa.display(matrix)
+    animation.display(matrix)
 
 
 # base = utils.ImageHolder("proto_neutral.gif", post_delay=0.001)
