@@ -45,8 +45,9 @@ canvas = matrix.CreateFrameCanvas()
 #     image_folder = pathlib.Path(sys.argv[1])
 
 import img_tools
+import utils
 
-# os.getcwd()  
+# os.getcwd()
 
 # path = os.path.abspath(image_file)
 # print(path)
@@ -69,7 +70,7 @@ import img_tools
 #         img_tools.play_image(matrix, idle)
 #     img_tools.play_image(matrix, random.choice(pictures))
 
-import utils
+
 #
 # gif = utils.GifHolder("proto_neutral.gif", post_delay=0)
 # while True:

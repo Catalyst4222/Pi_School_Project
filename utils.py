@@ -1,9 +1,9 @@
 import io
 import json
+import pathlib
 import sys
 import time
-from typing import TYPE_CHECKING, Union, TypedDict, Optional
-import pathlib
+from typing import TYPE_CHECKING, Optional, TypedDict, Union
 
 from PIL import Image, ImageSequence
 
@@ -13,19 +13,18 @@ if TYPE_CHECKING:
     except ImportError:
         from RGBMatrixEmulator import RGBMatrix
 
-
     # Todo move to another file
     class FrameData(TypedDict):
         name: str
         delay: float
         order: int
 
-
     class DataDict(TypedDict):
         frames: list[FrameData]
         resolved: bool
         export_to: str
         import_from: str
+
 
 # Hardcoded, fight me
 M_WIDTH = 64
@@ -51,13 +50,17 @@ class Pixel:
 
 class ImageHolder:
     def __init__(
-            self, image: Union[str, "pathlib.Path", bytes, Image.Image], post_delay: float = 0
+        self,
+        image: Union[str, "pathlib.Path", bytes, Image.Image],
+        post_delay: float = 0,
     ):
         self.image: Image.Image = self.prep_image(image)
         self.post_delay: float = post_delay
 
     @staticmethod
-    def prep_image(image: Union[str, "pathlib.Path", bytes, Image.Image]) -> Image.Image:
+    def prep_image(
+        image: Union[str, "pathlib.Path", bytes, Image.Image]
+    ) -> Image.Image:
 
         if not isinstance(image, Image.Image):
             image = Image.open(image)
@@ -70,9 +73,13 @@ class ImageHolder:
 
     def to_frames(self) -> list[Image.Image]:
         """Return all the individual frames of an image"""
-        frames: list[Image.Image] = [frame.copy() for frame in ImageSequence.Iterator(self.image)]
+        frames: list[Image.Image] = [
+            frame.copy() for frame in ImageSequence.Iterator(self.image)
+        ]
         print(f"adding delay, before: {frames[-1].info['duration']}")
-        frames[-1].info["duration"] += (self.post_delay * 1000)  # add delay and account for ms
+        frames[-1].info["duration"] += (
+            self.post_delay * 1000
+        )  # add delay and account for ms
         print(f"adding delay, after: {frames[-1].info['duration']}")
         return frames
 
@@ -83,7 +90,9 @@ class ImageHolder:
 
 class GifHolder(ImageHolder):  # subclass woooo!
     @staticmethod
-    def prep_image(image: Union[str, "pathlib.Path", bytes, Image.Image]) -> Image.Image:
+    def prep_image(
+        image: Union[str, "pathlib.Path", bytes, Image.Image]
+    ) -> Image.Image:
         if not isinstance(image, Image.Image):
             image = Image.open(image)
 
@@ -108,8 +117,10 @@ class GifHolder(ImageHolder):  # subclass woooo!
 class FrameHolder(GifHolder):  # Subclass due to being an "animation"
     # noinspection PyMissingConstructor
     def __init__(
-            self, path: Union[str, "pathlib.Path"], post_delay: float = 0,
-            export_to: Optional[Union[str, "pathlib.Path"]] = None
+        self,
+        path: Union[str, "pathlib.Path"],
+        post_delay: float = 0,
+        export_to: Optional[Union[str, "pathlib.Path"]] = None,
     ):
         self.post_delay = post_delay
 
@@ -143,8 +154,7 @@ class FrameHolder(GifHolder):  # Subclass due to being an "animation"
 
             # checks the delay given by data.json, to be passed to post_delay
             delay = next(
-                filter(lambda data_: data_["name"] == child.name, data["frames"]),
-                {}
+                filter(lambda data_: data_["name"] == child.name, data["frames"]), {}
             ).get("delay", 0)
 
             if child.is_dir() and (child / "data.json").exists():
@@ -163,7 +173,9 @@ class FrameHolder(GifHolder):  # Subclass due to being an "animation"
         first_frames = frame_sets[0].to_frames()
         first_image = first_frames[0]
 
-        durations = [first_image.info["duration"]] + [frame.info["duration"] for frame in first_frames]
+        durations = [first_image.info["duration"]] + [
+            frame.info["duration"] for frame in first_frames
+        ]
         extra_images = []
 
         for holder in frame_sets[1:]:
@@ -171,8 +183,13 @@ class FrameHolder(GifHolder):  # Subclass due to being an "animation"
                 durations.append(frame.info["duration"])
                 extra_images.append(frame)
 
-        first_image.save(stream, format="GIF", save_all=True,
-                         append_images=first_frames + extra_images, duration=durations)
+        first_image.save(
+            stream,
+            format="GIF",
+            save_all=True,
+            append_images=first_frames + extra_images,
+            duration=durations,
+        )
 
         stream.seek(0)
 
