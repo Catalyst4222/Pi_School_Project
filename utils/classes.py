@@ -1,22 +1,18 @@
 from collections.abc import Iterable
-from typing import Optional
-
-try:
-    from rgbmatrix import RGBMatrix
-except ImportError:
-    from RGBMatrixEmulator import RGBMatrix, RGBMatrixOptions
+from typing import TypedDict
 
 
-# Hardcoded, fight me
-M_WIDTH = 64
-M_HEIGHT = 32
+class FrameData(TypedDict):
+    name: str
+    delay: float
+    order: int
 
-DEFAULT_OPTIONS = RGBMatrixOptions()
-DEFAULT_OPTIONS.cols = M_WIDTH
-DEFAULT_OPTIONS.rows = M_HEIGHT
-DEFAULT_OPTIONS.chain_length = 1
-DEFAULT_OPTIONS.parallel = 1
-DEFAULT_OPTIONS.hardware_mapping = "adafruit-hat"
+
+class DataDict(TypedDict):
+    frames: list[FrameData]
+    resolved: bool
+    export_to: str
+    import_from: str
 
 
 class Color(Iterable):
@@ -51,10 +47,3 @@ class Pixel:
         if not isinstance(other, self.__class__):
             raise ValueError  # Should make good error message sometime
         return self.x == other.x and self.y == other.y
-
-
-class FormattedMatrix(RGBMatrix):
-    def __init__(self, options: Optional[RGBMatrixOptions] = None):
-        super().__init__(
-            options=DEFAULT_OPTIONS if options is None else options,
-        )

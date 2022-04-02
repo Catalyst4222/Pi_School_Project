@@ -2,17 +2,16 @@
 A group of functions to manage audio
 This is an awful mess
 """
+import audioop
 import threading
 import time
+import wave
 from collections import deque
 from math import log10
 from threading import Condition
 
 import numpy as np
 import pyaudio
-import wave
-import audioop
-
 from numpy import average
 
 _CHUNK = 1024
@@ -39,19 +38,20 @@ def _callback(in_data, frame_count, time_info, status):
 
     _SET_VOLUME = False
 
-
     # print(np.linalg.norm(_VOLUMES))
     return None, pyaudio.paContinue
 
+
 p = pyaudio.PyAudio()
 
-stream = p.open(format=_FORMAT,
-                channels=_CHANNELS,
-                rate=_RATE,
-                input=True,
-                frames_per_buffer=_CHUNK,
-                stream_callback=_callback)
-
+stream = p.open(
+    format=_FORMAT,
+    channels=_CHANNELS,
+    rate=_RATE,
+    input=True,
+    frames_per_buffer=_CHUNK,
+    stream_callback=_callback,
+)
 
 
 def get_volume():
@@ -60,7 +60,7 @@ def get_volume():
     _SET_VOLUME = True
     with _THING:
         _THING.wait()
-        return (_VOLUMES)
+        return _VOLUMES
 
 
 def stop():

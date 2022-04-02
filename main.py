@@ -12,9 +12,9 @@ from typing import Annotated, Literal, Sequence
 
 from PIL import Image, ImageSequence
 
-import audio
 import img_tools
-import utils
+from utils import holders, transitions
+from utils.matrix import FormattedMatrix
 
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
@@ -76,8 +76,8 @@ Color = tuple[char, char, char]
 
 
 # animation = utils.FrameHolder("animations")
-matrix = utils.FormattedMatrix()
-matrix.Fill(0, 0, 0)
+matrix = FormattedMatrix()
+matrix.Fill(0xBB, 255, 255)
 i = 1
 
 # rms
@@ -90,24 +90,28 @@ i = 1
 # "none" 20
 # med 30-50
 # high 50+
-canvas = matrix.CreateFrameCanvas()
+# canvas = matrix.CreateFrameCanvas()
+transitions.panImage(matrix, holders.ImageHolder("neutral.gif"))
 while True:
+    time.sleep(500)
+    ...
     #     animation.display(matrix)
     # base = utils.ImageHolder("proto_neutral.gif", post_delay=0.001)
     # for i in range(64):
     # print('a')
-    i = int(audio.get_volume())
-    print(i)
-    canvas.Fill(0, 0, 0)
+    # i = int(audio.get_volume())
+    # print(i)
+    # canvas.Fill(0, 0, 0)
+    #
+    # a = min(i, 64)
+    #
+    # # base.display(canvas)
+    #
+    # block = Image.new('1', (64 - a, 32), 0xFFFFFF)
+    # canvas.SetImage(block.convert("RGB"), a)
+    #
+    # matrix.SwapOnVSync(canvas)
 
-    a = min(i, 64)
-
-    # base.display(canvas)
-
-    block = Image.new('1', (64 - a, 32), 0xFFFFFF)
-    canvas.SetImage(block.convert("RGB"), a)
-
-    matrix.SwapOnVSync(canvas)
 
 # while True:
 # utils.GifHolder("proto_neutral.gif").display(matrix)
