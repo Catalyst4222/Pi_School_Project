@@ -100,7 +100,7 @@ class FrameHolder(GifHolder):  # Subclass due to being an "animation"
         self.post_delay = post_delay
 
         folder_path = pathlib.Path(path)
-        data: DataDict = json.loads((folder_path / "data.json").read_text())
+        data: "DataDict" = json.loads((folder_path / "data.json").read_text())
 
         if export_to is None:
             export_to = data.get("export_to")
