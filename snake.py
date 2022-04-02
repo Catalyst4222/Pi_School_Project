@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
-import itertools
-import math
 import sys
 import time
-from collections import deque, namedtuple
+from collections import deque
 from random import randint
 from threading import Thread
-from typing import Annotated, Literal, Sequence
+from typing import Literal
 
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
@@ -49,6 +47,7 @@ class Pixel:
 
 
 try:
+    # noinspection PyUnresolvedReferences
     import keyboard
 
     mode = "keyboard"

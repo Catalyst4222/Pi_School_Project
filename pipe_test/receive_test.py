@@ -1,7 +1,3 @@
-import random
-import time
-
-
 def receive(queue):
     while True:
         data = queue.get()

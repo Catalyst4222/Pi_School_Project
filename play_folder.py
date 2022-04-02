@@ -1,16 +1,10 @@
-import itertools
-import math
-import os
 import pathlib
 import random
 import sys
 import time
-from collections import deque, namedtuple
-from random import randint
-from threading import Thread
-from typing import Annotated, Literal, Sequence
+from typing import Literal
 
-from PIL import Image, ImageSequence
+import img_tools
 
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
@@ -44,7 +38,6 @@ else:
 
     image_folder = pathlib.Path(sys.argv[1])
 
-import img_tools
 
 # os.getcwd()  # TODO search for pre-scaled image
 

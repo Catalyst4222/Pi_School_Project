@@ -4,15 +4,10 @@ This is an awful mess
 """
 import audioop
 import threading
-import time
-import wave
-from collections import deque
 from math import log10
 from threading import Condition
 
-import numpy as np
 import pyaudio
-from numpy import average
 
 _CHUNK = 1024
 _FORMAT = pyaudio.paInt16
@@ -26,7 +21,7 @@ _THING = Condition()
 
 
 # decibel = 20 * log10(rms)
-def _callback(in_data, frame_count, time_info, status):
+def _callback(in_data, *_):
     global _VOLUMES, _SET_VOLUME
 
     print(threading.current_thread())
