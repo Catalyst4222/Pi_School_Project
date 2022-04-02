@@ -1,60 +1,70 @@
 """
 A group of functions to manage audio
+This is an awful mess
 """
-import multiprocessing
-from typing import Optional
+import threading
+import time
+from collections import deque
+from math import log10
+from threading import Condition
 
 import numpy as np
-import sounddevice as sd
+import pyaudio
+import wave
+import audioop
+
+from numpy import average
+
+_CHUNK = 1024
+_FORMAT = pyaudio.paInt16
+_CHANNELS = 1
+_RATE = 12800
+_RECORD_SECONDS = 5
+
+_VOLUMES = 0
+_SET_VOLUME = False
+_THING = Condition()
 
 
-class _Volume(multiprocessing.Process):
-    """
-    A class to manage the volume of the audio
-    """
+# decibel = 20 * log10(rms)
+def _callback(in_data, frame_count, time_info, status):
+    global _VOLUMES, _SET_VOLUME
 
-    def __init__(self):
-        super().__init__()
-        self.volume: float = 0
-        self.queue: multiprocessing.Queue = multiprocessing.JoinableQueue(10)  # restrict size
+    print(threading.current_thread())
 
-    def run(self):
-        sd.InputStream(callback=self.set_volume).start()
+    if _SET_VOLUME:
+        with _THING:
+            _VOLUMES = 20 * log10(audioop.rms(in_data, 2))
+            _THING.notify_all()
 
-    def set_volume(self, indata, frames, time, status):
-        volume_norm = np.linalg.norm(indata) * 10
-        # print("|" * int(volume_norm))
-        self.volume = volume_norm
-
-        if self.queue.full():  # prevent overflow
-            self.queue.get()
-
-        self.queue.put(volume_norm)
-        print('audio volume:', volume_norm)
+    _SET_VOLUME = False
 
 
-    def get_volume(self) -> float:
-        return self.volume
+    # print(np.linalg.norm(_VOLUMES))
+    return None, pyaudio.paContinue
 
+p = pyaudio.PyAudio()
 
-_VOLUME: _Volume = _Volume()
+stream = p.open(format=_FORMAT,
+                channels=_CHANNELS,
+                rate=_RATE,
+                input=True,
+                frames_per_buffer=_CHUNK,
+                stream_callback=_callback)
 
-
-def volume_queue():
-    """
-    Get a queue that will be updated with volumes every so often
-
-    :return: a queue full of volumes
-    :rtype: multiprocessing.Queue
-    """
-    return _VOLUME.queue
 
 
 def get_volume():
-    """
-    Get the current volume
+    global _SET_VOLUME
 
-    :return: The volume
-    :rtype: float
-    """
-    return _VOLUME.volume
+    _SET_VOLUME = True
+    with _THING:
+        _THING.wait()
+        return (_VOLUMES)
+
+
+def stop():
+    """warning: will stop all audio sources using it"""
+    stream.stop_stream()
+    stream.close()
+    p.terminate()

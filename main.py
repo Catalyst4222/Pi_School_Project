@@ -12,6 +12,7 @@ from typing import Annotated, Literal, Sequence
 
 from PIL import Image, ImageSequence
 
+import audio
 import img_tools
 import utils
 
@@ -35,7 +36,6 @@ options.hardware_mapping = "adafruit-hat"  # If you have an Adafruit HAT: 'adafr
 # noinspection PyTypeHints
 char = Literal[tuple(range(256))]
 Color = tuple[char, char, char]
-
 
 # if len(sys.argv) < 2:
 #     sys.exit("Require an image argument")
@@ -75,25 +75,39 @@ Color = tuple[char, char, char]
 #     gif.display(matrix)
 
 
-animation = utils.FrameHolder("animations")
+# animation = utils.FrameHolder("animations")
 matrix = utils.FormattedMatrix()
+matrix.Fill(0, 0, 0)
+i = 1
 
+# rms
+# low 100-
+# med 100-1000
+# high 1000+
+# cap = ~15000
+
+# decibles
+# "none" 20
+# med 30-50
+# high 50+
+canvas = matrix.CreateFrameCanvas()
 while True:
-    animation.display(matrix)
+    #     animation.display(matrix)
+    # base = utils.ImageHolder("proto_neutral.gif", post_delay=0.001)
+    # for i in range(64):
+    # print('a')
+    i = int(audio.get_volume())
+    print(i)
+    canvas.Fill(0, 0, 0)
 
+    a = min(i, 64)
 
-# base = utils.ImageHolder("proto_neutral.gif", post_delay=0.001)
-# for i in range(64):
-#     canvas = matrix.CreateFrameCanvas()
-#
-#     base.display(canvas)
-#
-#     block = Image.new('1', (64-i, 32))
-#     canvas.SetImage(block.convert("RGB"), i)
-#
-#
-#     matrix.SwapOnVSync(canvas)
-#     print(i)
-#
+    # base.display(canvas)
+
+    block = Image.new('1', (64 - a, 32), 0xFFFFFF)
+    canvas.SetImage(block.convert("RGB"), a)
+
+    matrix.SwapOnVSync(canvas)
+
 # while True:
-#     utils.GifHolder("proto_neutral.gif").display(matrix)
+# utils.GifHolder("proto_neutral.gif").display(matrix)
