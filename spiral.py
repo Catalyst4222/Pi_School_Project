@@ -6,36 +6,20 @@ try:
 except ImportError:
     from RGBMatrixEmulator import RGBMatrix, RGBMatrixOptions
 
-# from PIL import Image
-#
-# if len(sys.argv) < 2:
-#     sys.exit("Require an image argument")
-# else:
-#     image_file = sys.argv[1]
-#
-# image = Image.open(image_file)
 
 # Configuration for the matrix
 options = RGBMatrixOptions()
 options.rows = 32
 options.cols = 64
-# options.pixel_mapper_config = 'adafruit-hat'
 options.chain_length = 1
 options.parallel = 1
 options.hardware_mapping = "adafruit-hat"  # If you have an Adafruit HAT: 'adafruit-hat'
-# options.gpio_slowdown = 1
-# options.disable_hardware_pulsing = True
 
 matrix = RGBMatrix(options=options)
 
 
 # # Make image fit our screen.
-# image.thumbnail((matrix.width, matrix.height), Image.ANTIALIAS)
-# matrix.SetImage(image.convert('RGB'))
 
-# for x in range(matrix.width):
-#     for y in range(matrix.height):
-#         matrix.SetPixel(x, y, x, y, 555)
 
 
 def flipper(thing):

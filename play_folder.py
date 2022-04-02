@@ -15,12 +15,9 @@ except ImportError:
 options = RGBMatrixOptions()
 options.rows = 32
 options.cols = 64
-# options.pixel_mapper_config = 'adafruit-hat'
 options.chain_length = 1
 options.parallel = 1
 options.hardware_mapping = "adafruit-hat"  # If you have an Adafruit HAT: 'adafruit-hat'
-# options.gpio_slowdown = 1
-# options.disable_hardware_pulsing = True
 
 
 # noinspection PyTypeHints
@@ -33,17 +30,12 @@ canvas = matrix.CreateFrameCanvas()
 
 if len(sys.argv) < 2:
     sys.exit("Require an image argument")
-    # image_file = "saab-1496319292.gif"
 else:
 
     image_folder = pathlib.Path(sys.argv[1])
 
 
-# os.getcwd()  # TODO search for pre-scaled image
 
-# path = os.path.abspath(image_file)
-# print(path)
-# assert isinstance(path, str)
 if not image_folder.is_dir():
     sys.exit("Must be a folder")
 

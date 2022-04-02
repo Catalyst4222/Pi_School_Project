@@ -13,12 +13,9 @@ except ImportError:
 options = RGBMatrixOptions()
 options.rows = 32
 options.cols = 64
-# options.pixel_mapper_config = 'adafruit-hat'
 options.chain_length = 1
 options.parallel = 1
 options.hardware_mapping = "adafruit-hat"  # If you have an Adafruit HAT: 'adafruit-hat'
-# options.gpio_slowdown = 1
-# options.disable_hardware_pulsing = True
 
 matrix = RGBMatrix(options=options)
 

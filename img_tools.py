@@ -42,9 +42,7 @@ def prep_gif(file):
 
 def play_image(matrix, image: Image.Image):
     for frame in range(image.n_frames):
-        # print(image.n_frames)
         image.seek(frame)
         print(image.info["duration"])
-        # canvas.SetImage(image.convert('RGB'))
         matrix.SetImage(image.convert("RGB"))
         time.sleep(image.info["duration"] / 1000)

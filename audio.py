@@ -33,7 +33,6 @@ def _callback(in_data, *_):
 
     _SET_VOLUME = False
 
-    # print(np.linalg.norm(_VOLUMES))
     return None, pyaudio.paContinue
 
 

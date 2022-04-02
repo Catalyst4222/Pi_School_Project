@@ -124,7 +124,6 @@ class FrameHolder(GifHolder):  # Subclass due to being an "animation"
         # rather bad memory management
         for child in children:
             if child.name not in valid_children:
-                # del child
                 continue
 
             # checks the delay given by data.json, to be passed to post_delay
