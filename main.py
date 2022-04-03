@@ -26,12 +26,6 @@ char = Literal[tuple(range(256))]
 Color = tuple[char, char, char]
 
 
-
-
-
-
-
-
 matrix = FormattedMatrix()
 
 
@@ -67,10 +61,6 @@ while True:
     # while True:
     #     time.sleep(500)
     ...
-<<<<<<< HEAD
-
-
-=======
     #     animation.display(matrix)
     # base = utils.ImageHolder("proto_neutral.gif", post_delay=0.001)
     # for i in range(64):
@@ -90,4 +80,3 @@ while True:
 
 
 # while True:
->>>>>>> b0da72e (add a image fading thing)
