@@ -34,9 +34,6 @@ class ImageHolder:
         if not isinstance(image, Image.Image):
             image = Image.open(image)
 
-        if image.mode != "RGB":
-            image = image.convert("RGB")
-
         if image.width > M_WIDTH or image.height > M_HEIGHT:
             # Fit the image to the screen
             image.thumbnail((M_WIDTH, M_HEIGHT))
@@ -48,16 +45,16 @@ class ImageHolder:
         frames: list[Image.Image] = [
             frame.copy() for frame in ImageSequence.Iterator(self.image)
         ]
-        print(f"adding delay, before: {frames[-1].info['duration']}")
-        frames[-1].info["duration"] += (
+        print(f"adding delay, before: {frames[-1].info.get('duration')}")
+        frames[-1].info["duration"] = frames[-1].info.get("duration", 0) + (
             self.post_delay * 1000
         )  # add delay and account for ms
-        print(f"adding delay, after: {frames[-1].info['duration']}")
+        print(f"adding delay, after: {frames[-1].info.get('duration')}")
         return frames
 
     def display(self, matrix: "RGBMatrix"):
         matrix.SetImage(self.image.convert("RGB"))
-        time.sleep(self.post_delay or self.image.info.get("duration"))
+        time.sleep(self.post_delay or self.image.info.get("duration", 0))
 
 
 class GifHolder(ImageHolder):  # subclass woooo!
@@ -68,9 +65,6 @@ class GifHolder(ImageHolder):  # subclass woooo!
         if not isinstance(image, Image.Image):
             image = Image.open(image)
 
-        if image.mode != "RGB":
-            image = image.convert("RGB")
-
         if image.width > M_WIDTH or image.height > M_HEIGHT:
             # Fit the image to the screen
             image.thumbnail((M_WIDTH, M_HEIGHT))
@@ -78,6 +72,15 @@ class GifHolder(ImageHolder):  # subclass woooo!
         return image
 
     def display(self, matrix: "RGBMatrix"):
+        # self.image.seek(1)
+        # frames: list[Image.Image] = [
+        #     frame.copy() for frame in ImageSequence.Iterator(self.image)
+        # ]
+        # for frame in frames:
+        #     matrix.SetImage(frame.convert("RGB"))
+        #     time.sleep(frame.info.get("duration", 0) / 1000)
+
+        # this broke for some reason
         for frame in range(self.image.n_frames):
             self.image.seek(frame)
             matrix.SetImage(self.image.convert("RGB"))

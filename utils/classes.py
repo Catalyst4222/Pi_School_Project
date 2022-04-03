@@ -1,4 +1,4 @@
-from collections.abc import Iterable
+from collections import Sequence
 from typing import TypedDict
 
 
@@ -15,7 +15,8 @@ class DataDict(TypedDict):
     import_from: str
 
 
-class Color(Iterable):
+# Do not trust
+class Color(Sequence):
     def __init__(self, r: int, g: int, b: int):
         _locals = locals()
         _locals.pop("self")
@@ -27,9 +28,28 @@ class Color(Iterable):
         self.r: int = r
         self.g: int = g
         self.b: int = b
+        self.tuple: tuple[int, int, int] = (r, g, b)
 
-    def __iter__(self):
-        return (self.r, self.g, self.b).__iter__()
+    # We're a tuple :wink:
+    def __getattribute__(self, name):
+        if name == "tuple":
+            return super().__getattribute__(name)
+
+        try:
+            return self.tuple.__getattribute__(name)
+        except AttributeError:
+            return super().__getattribute__(name)
+
+    def __len__(self):
+        return 3
+
+    def __getitem__(self, item):
+        if not isinstance(item, (int, slice)):
+            raise TypeError(
+                f"{self.__class__.__name__} indices must be integers or slices, not str"
+            )
+
+        return self.tuple[item]
 
 
 class Pixel:

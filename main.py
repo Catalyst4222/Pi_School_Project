@@ -1,8 +1,11 @@
 import time
 from typing import Literal
 
-from utils import holders, transitions
-from utils.matrix import FormattedMatrix
+from PIL import Image
+
+import utils
+from utils import GifHolder, ImageHolder, holders, transitions
+from utils.matrix import M_HEIGHT, M_WIDTH, FormattedMatrix
 
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
@@ -65,23 +68,39 @@ Color = tuple[char, char, char]
 
 # animation = utils.FrameHolder("animations")
 matrix = FormattedMatrix()
-matrix.Fill(0xBB, 255, 255)
+
+
+def avg(a, b):
+    return (a + b) // 2
+
+
+# matrix.Fill(88, 255, 255)
+im1 = Image.new("RGB", (M_WIDTH, M_HEIGHT), 0xBBFFFF)
+im1.info["duration"] = 0
+# im2 = Image.new("RGB", (M_WIDTH, M_HEIGHT), 0xFFFFFF)
+utils.fadeImage(matrix, ImageHolder("rainbow.png"), GifHolder("proto_neutral.gif"))
 i = 1
-
-# rms
-# low 100-
-# med 100-1000
-# high 1000+
-# cap = ~15000
-
-# decibles
-# "none" 20
-# med 30-50
-# high 50+
-# canvas = matrix.CreateFrameCanvas()
-transitions.panImage(matrix, holders.ImageHolder("neutral.gif"))
+print("kauwegf")
+# matrix.SetImage(Image.new("RGB", (M_WIDTH, M_HEIGHT), 0xFFD700))
+# print(image := Image.open("proto_neutral.gif"))
+# print(image.n_frames)
 while True:
-    time.sleep(500)
+    utils.GifHolder("proto_neutral.gif").display(matrix)
+
+    # rms
+    # low 100-
+    # med 100-1000
+    # high 1000+
+    # cap = ~15000
+
+    # decibles
+    # "none" 20
+    # med 30-50
+    # high 50+
+    # canvas = matrix.CreateFrameCanvas()
+    # transitions.fade(matrix, holders.ImageHolder("neutral.gif"))
+    # while True:
+    #     time.sleep(500)
     ...
     #     animation.display(matrix)
     # base = utils.ImageHolder("proto_neutral.gif", post_delay=0.001)
@@ -102,4 +121,3 @@ while True:
 
 
 # while True:
-# utils.GifHolder("proto_neutral.gif").display(matrix)

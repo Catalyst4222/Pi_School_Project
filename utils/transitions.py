@@ -1,4 +1,7 @@
 """A set of functions for transitioning images. Credit goes to MuneLitJolty#0447"""
+import time
+from typing import Union
+
 from .classes import Color
 from .holders import ImageHolder
 from .matrix import M_HEIGHT, M_WIDTH
@@ -9,14 +12,19 @@ except ImportError:
     from RGBMatrixEmulator import RGBMatrix
 
 
-def panColor(matrix: RGBMatrix, color: Color, speed: int = 1, inverse: int = False):
+def panColor(
+    matrix: RGBMatrix,
+    color: Union[Color, tuple[int, int, int]],
+    speed: int = 1,
+    inverse: int = False,
+):
     """
     Fill the matrix from one side to the other with the set color
 
     :param matrix: The matrix to display on
     :type matrix: RGBMatrix
     :param color: The color to fill with
-    :type color: Color
+    :type color: Union[Color, tuple[int, int, int]]
     :param speed: How many pixels to fill in a loop
     :type speed: int
     :param inverse: Go right to left instead of left to right, default False
@@ -34,7 +42,7 @@ def panColor(matrix: RGBMatrix, color: Color, speed: int = 1, inverse: int = Fal
 
 def panLines(
     matrix: RGBMatrix,
-    color,
+    color: Union[Color, tuple[int, int, int]],
     gap: int = 1,
     offset: int = 0,
     speed: int = 1,
@@ -46,7 +54,7 @@ def panLines(
     :param matrix: The matrix to display on
     :type matrix: RGBMatrix
     :param color: The color to fill with
-    :type color: Color
+    :type color: Union[Color, tuple[int, int, int]]
     :param gap: How many lines to leave between each stroke, default 1
     :type gap: int
     :param offset: How many lines down to start
@@ -67,14 +75,16 @@ def panLines(
             matrix.SwapOnVSync(canvas)
 
 
-def crossFade(matrix: RGBMatrix, color: Color, speed: int = 1):
+def crossFill(
+    matrix: RGBMatrix, color: Union[Color, tuple[int, int, int]], speed: int = 1
+):
     """
     Draw sets of alternating lines from both sides of the matrix
 
     :param matrix: The matrix to display on
     :type matrix: RGBMatrix
     :param color: The color to fill with
-    :type color: Color
+    :type color: Union[Color, tuple[int, int, int]]
     :param speed: How many pixels to fill in a loop
     :type speed: int
     """
@@ -96,3 +106,58 @@ def panImage(matrix: RGBMatrix, image: ImageHolder):
             print(image.image.getpixel((x, y)))
             canvas.SetPixel(x, y, *image.image.getpixel((x, y)))
         matrix.SwapOnVSync(canvas)
+
+
+def fadeImage(
+    matrix: RGBMatrix,
+    origin: ImageHolder,
+    destination: ImageHolder,
+    steps: int = 8,
+    delay: float = 0.1,
+):
+    """
+    Fades the display from one image to another
+
+    :param matrix: The matrix to display on
+    :type matrix: RGBMatrix
+    :param origin: The image to start the transition from (will be `.display`ed)
+    :type origin: ImageHolder
+    :param destination: The image to end on (will be `.display`ed)
+    :type destination: ImageHolder
+    :param steps: How many frames to show in the transition
+    :type steps: int
+    :param delay: How long to show each step
+    :type delay: float
+    :return:
+    :rtype:
+    """
+    origin.display(matrix)  # solid starting screen
+
+    per_step = 256 // steps  # how much to shift per cycle
+
+    layer = (
+        destination.to_frames()[0]
+        .convert("RGBA")
+        .resize(
+            (M_WIDTH, M_HEIGHT),
+        )
+    )  # will appear over time
+
+    base = (
+        origin.to_frames()[-1]
+        .convert("RGBA")
+        .resize(
+            (M_WIDTH, M_HEIGHT),
+        )
+    )  # will disappear over time
+
+    for step in range(steps):
+        layer.putalpha(step * per_step)  # scale up visibility
+        print(step * per_step)
+        to_show = base.copy()  # copy to not overwrite
+        to_show.paste(layer, (0, 0), layer)
+
+        matrix.SetImage(to_show.convert("RGB"))
+        time.sleep(delay)
+
+    destination.display(matrix)  # solid ending screen
