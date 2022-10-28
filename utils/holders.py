@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Optional, Union
 
 from PIL import Image, ImageSequence
 
-from .matrix import M_HEIGHT, M_WIDTH
+from .constants import M_HEIGHT, M_WIDTH
 
 if TYPE_CHECKING:
     from classes import DataDict
@@ -81,15 +81,29 @@ class GifHolder(ImageHolder):  # subclass woooo!
         #     time.sleep(frame.info.get("duration", 0) / 1000)
 
         # this broke for some reason
-        for frame in range(self.image.n_frames):
+        for frame, delay in enumerate(self.get_frame_timings(self.image)):
             self.image.seek(frame)
+            # print(self.image.info)
             matrix.SetImage(self.image.convert("RGB"))
-            print(self.image.info["duration"])
-            time.sleep(self.image.info["duration"] / 1000)
+            # print(delay)
+            time.sleep(delay / 1000)
 
         print("sleeping")
         time.sleep(self.post_delay)
         print("slept")
+
+    @staticmethod
+    def get_frame_timings(image: Image.Image) -> list[int]:
+        image.seek(0)
+        frame = 0
+        durations: list[int] = []
+        while True:
+            try:
+                frame += 1
+                durations.append(image.info["duration"])
+                image.seek(image.tell() + 1)
+            except EOFError:
+                return durations
 
 
 class FrameHolder(GifHolder):  # Subclass due to being an "animation"

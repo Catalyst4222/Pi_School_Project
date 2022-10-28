@@ -1,0 +1,24 @@
+<head>
+    <script type="text/javascript">
+        $(function() {{ // code required jquery and image picker. Add those in head section
+
+            $("#select").imagepicker(); // you can pass param to customize it in your manner
+        }})
+    </script>
+</head>
+<body>
+    <h1>
+        Display a picture
+    </h1>
+    <image id="preview"></image>
+    <form action="/display_select" method="post">
+        <select id="select" name="select" onchange="document.getElementById('preview').src = '/images/'+this.value">>
+            {select_options}
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+    <script type="text/javascript">
+        //set preview default
+        document.getElementById('preview').src = '/images/' + document.getElementById('select').options[0].value
+    </script>
+</body>

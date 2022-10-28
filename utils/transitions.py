@@ -3,8 +3,8 @@ import time
 from typing import Union
 
 from .classes import Color
+from .constants import M_HEIGHT, M_WIDTH
 from .holders import ImageHolder
-from .matrix import M_HEIGHT, M_WIDTH
 
 try:
     from rgbmatrix import RGBMatrix

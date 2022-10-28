@@ -21,7 +21,6 @@ matrix = RGBMatrix(options=options)
 # # Make image fit our screen.
 
 
-
 def flipper(thing):
     """`[1,2,3,4]` -> `[1,4,2,3]`"""
     res = []

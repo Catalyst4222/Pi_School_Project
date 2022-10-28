@@ -35,7 +35,6 @@ else:
     image_folder = pathlib.Path(sys.argv[1])
 
 
-
 if not image_folder.is_dir():
     sys.exit("Must be a folder")
 
