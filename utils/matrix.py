@@ -30,10 +30,11 @@ class FormattedMatrix(RGBMatrix):  # todo add helper methods
         )
 
     def __init__(self, *args, options: Optional[RGBMatrixOptions] = None, **kwargs):
-        # noinspection PyArgumentList
-        super().__init__(
-            *args, options=DEFAULT_OPTIONS if options is None else options, **kwargs
-        )
+        if RGBMatrix.__module__.startswith("RGBMatrixEmulator"):
+            # noinspection PyArgumentList
+            super().__init__(
+                *args, options=DEFAULT_OPTIONS if options is None else options, **kwargs
+            )
 
     def display(self, image: Union[Image.Image, ImageHolder, Path, str]):
         if isinstance(image, str):
