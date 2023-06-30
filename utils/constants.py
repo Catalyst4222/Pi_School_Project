@@ -1,4 +1,7 @@
-from RGBMatrixEmulator import RGBMatrixOptions
+try:
+    from rgbmatrix import RGBMatrixOptions
+except ImportError:
+    from RGBMatrixEmulator import RGBMatrixOptions
 
 M_WIDTH = 64
 M_HEIGHT = 32

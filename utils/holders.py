@@ -88,9 +88,7 @@ class GifHolder(ImageHolder):  # subclass woooo!
             # print(delay)
             time.sleep(delay / 1000)
 
-        print("sleeping")
         time.sleep(self.post_delay)
-        print("slept")
 
     @staticmethod
     def get_frame_timings(image: Image.Image) -> list[int]:
