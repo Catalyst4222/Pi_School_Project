@@ -1,7 +1,7 @@
 import io
 import json
-import pathlib
 import time
+from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Union
 
 from PIL import Image, ImageSequence
@@ -20,16 +20,14 @@ if TYPE_CHECKING:
 class ImageHolder:
     def __init__(
         self,
-        image: Union[str, "pathlib.Path", bytes, Image.Image],
+        image: Union[str, "Path", bytes, Image.Image],
         post_delay: float = 0,
     ):
         self.image: Image.Image = self.prep_image(image)
         self.post_delay: float = post_delay
 
     @staticmethod
-    def prep_image(
-        image: Union[str, "pathlib.Path", bytes, Image.Image]
-    ) -> Image.Image:
+    def prep_image(image: Union[str, "Path", bytes, Image.Image]) -> Image.Image:
 
         if not isinstance(image, Image.Image):
             image = Image.open(image)
@@ -59,9 +57,8 @@ class ImageHolder:
 
 class GifHolder(ImageHolder):  # subclass woooo!
     @staticmethod
-    def prep_image(
-        image: Union[str, "pathlib.Path", bytes, Image.Image]
-    ) -> Image.Image:
+    def prep_image(image: Union[str, "Path", bytes, Image.Image]) -> Image.Image:
+        # todo duplicated?
         if not isinstance(image, Image.Image):
             image = Image.open(image)
 
@@ -108,13 +105,14 @@ class FrameHolder(GifHolder):  # Subclass due to being an "animation"
     # noinspection PyMissingConstructor
     def __init__(
         self,
-        path: Union[str, "pathlib.Path"],
+        path: Union[str, "Path"],
         post_delay: float = 0,
-        export_to: Optional[Union[str, "pathlib.Path"]] = None,
+        export_to: Optional[Union[str, "Path"]] = None,
     ):
+        # todo this is probably too complex, and should use `prep_image`
         self.post_delay = post_delay
 
-        folder_path = pathlib.Path(path)
+        folder_path = Path(path)
         data: "DataDict" = json.loads((folder_path / "data.json").read_text())
 
         if export_to is None:
@@ -124,7 +122,7 @@ class FrameHolder(GifHolder):  # Subclass due to being an "animation"
         if (
             data.get("resolved")
             and (import_from := data.get("import_from"))
-            and pathlib.Path(import_from).exists()
+            and Path(import_from).exists()
         ):
             # The file has already been made, and data says it's good
             print(f"fetching image for {path} from resolved")
@@ -183,3 +181,26 @@ class FrameHolder(GifHolder):  # Subclass due to being an "animation"
         stream.seek(0)
 
         self.image = Image.open(stream)
+
+
+def get_holder(image: Union[Image.Image, ImageHolder, Path, str]) -> ImageHolder:
+    if isinstance(image, str):
+        holder = GifHolder(image) if image.endswith(".gif") else ImageHolder(image)
+    elif isinstance(image, Path):
+        if image.is_dir():
+            holder = FrameHolder(image)
+        elif image.suffix == ".gif":
+            holder = GifHolder(image)
+        else:
+            holder = ImageHolder(image)
+    elif isinstance(image, Image.Image):
+        if getattr(image, "n_frames", 0) > 1:
+            holder = GifHolder(image)
+        else:
+            holder = ImageHolder(image)
+    elif isinstance(image, ImageHolder):
+        holder = image
+    else:
+        raise ValueError(f"image was not a valid type (got {image.__class__.__name__}")
+
+    return holder

@@ -3,9 +3,13 @@ various functions to manipulate colors and images
 for simplicity, all colors are assumed rgb unless stated otherwise
 """
 from math import sqrt
-from typing import TypeVar
+from typing import TypeVar, Union
 
-from utils.classes import Color
+from PIL.Image import Image
+
+from .classes import Color
+from .constants import M_HEIGHT, M_WIDTH
+from .holders import ImageHolder
 
 _T = TypeVar("_T")
 _Color = TypeVar(
@@ -34,3 +38,17 @@ def average_colors(col1: _Color, col2: _Color) -> tuple[int, int, int]:
         int(sqrt(col1[component] ** 2 + col2[component] ** 2)) // 2
         for component in range(3)
     )
+
+
+def resize(
+    image: Union[Image, ImageHolder], size: tuple[int, int] = (M_WIDTH, M_HEIGHT)
+):
+    """Resized the image in-place to fit in the given size. Defaults to the matrix size"""
+    if isinstance(image, Image):
+        image.thumbnail(size)
+    elif isinstance(image, ImageHolder):
+        image.image.thumbnail(size)
+    else:
+        raise TypeError(
+            f"Expected Image or ImageHolder, got {image.__class__.__name__}"
+        )
